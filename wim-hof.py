@@ -5,7 +5,7 @@ import datetime
 import os
 import random
 
-TESTING_MODE = True
+TESTING_MODE = False
 
 
 def record_time_with_sentinel():
@@ -20,17 +20,21 @@ breathing_sets = int(input("How many breathing sets would you like to do?\n"))
 breathing_times = []
 
 for i in range(1, breathing_sets + 1):
+    index = i
+    if index > 3:
+        index = 'n'
     if TESTING_MODE:
-        wim_player = vlc.MediaPlayer('audio/wim/wim-short.m4a')
+        wim_player = vlc.MediaPlayer('audio/wim/breathing_testing.m4a')
     else:
-        wim_player = vlc.MediaPlayer(f'./audio/wim/breathing-{i}.mp3')
+        wim_player = vlc.MediaPlayer(f'./audio/wim/breathing-{index}.mp3')
     wim_player.play()
 
     time.sleep(1)  # Wait for audio to load and start playing
     while wim_player.is_playing():
         pass
-
-    breathing_music_player = vlc.MediaPlayer(f'./audio/song{i}/' + random.choice(os.listdir(f"./audio/song{i}")))
+    song_list = [f for f in os.listdir(f"./audio/song{index}") if f.endswith('mp3')]
+    breathing_music_player = vlc.MediaPlayer(f'./audio/song{index}/' + random.choice(song_list))
+    breathing_music_player.audio_set_volume(60)  # Wim doesn't talk very loud
     breathing_music_player.play()
 
     time_breathing = record_time_with_sentinel()
@@ -40,8 +44,11 @@ for i in range(1, breathing_sets + 1):
         breathing_music_player.stop()
 
     # Play the 15 second breath hold
-    # TODO: add debug
-    b_player = vlc.MediaPlayer('./audio/wim/15_second_hold.mp3')
+    if TESTING_MODE:
+        b_player = vlc.MediaPlayer('./audio/wim/15_sec_testing.mp3')
+    else:
+        b_player = vlc.MediaPlayer('./audio/wim/15_second_hold.mp3')
+
     b_player.play()
     time.sleep(1)  # Wait for audio to load and start playing
     while (b_player.is_playing()):
