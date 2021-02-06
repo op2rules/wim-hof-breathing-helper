@@ -25,4 +25,4 @@ Then enter the number of iterations you want to go for. 3 is typical
 `enter`
 
 ## License
-Music by Ketsa, https://freemusicarchive.org/music/Ketsa, https://ketsa.uk/ used under the Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0) https://creativecommons.org/licenses/by-nc-nd/4.0/ license which can be found https://creativecommons.org/licenses/by-nc-nd/4.0/legalcode
+Music by Ketsa, https://freemusicarchive.org/music/Ketsa, https://ketsa.uk/  and Siddhartha Corsus https://siddharthamusic.bandcamp.com/ used under the Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0) https://creativecommons.org/licenses/by-nc-nd/4.0/ license which can be found https://creativecommons.org/licenses/by-nc-nd/4.0/legalcode
