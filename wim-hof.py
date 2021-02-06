@@ -5,7 +5,7 @@ import datetime
 import os
 import random
 
-TESTING_MODE = True
+TESTING_MODE = False
 
 def record_time_with_sentinel():
     start_time = time.time()
@@ -21,7 +21,7 @@ for i in range(1, breathing_sets + 1):
     if TESTING_MODE == True:
         wim_player = vlc.MediaPlayer('wim-short.m4a')
     else:
-        wim_player = vlc.MediaPlayer(f'breathing-{i}.m4a')
+        wim_player = vlc.MediaPlayer(f'breathing-{i}.mp3')
     wim_player.play()
 
     time.sleep(1) # Wait for audio to load and start playing
@@ -37,13 +37,21 @@ for i in range(1, breathing_sets + 1):
     if breathing_music_player.is_playing():
         breathing_music_player.stop()
 
+    # Play the 15 second breath hold
+    # TODO: add debug
+    b_player = vlc.MediaPlayer('15_second_hold.mp3')
+    b_player.play()
+    time.sleep(1) # Wait for audio to load and start playing
+    while(b_player.is_playing()):
+        pass
+
 print("Your breathing times were:")
 for i in range(len(breathing_times)):
     if breathing_times[i] > 60:
         minutes = math.floor(breathing_times[i] / 60)
         seconds = breathing_times[i] - (minutes*60)
         if len(str(seconds)) == 1:
-            seconds = str(seconds) + "0"
+            seconds = "0" + str(seconds)
         print(f"Set {i + 1}: {minutes}:{seconds}")
     else:
         print(f"Set {i + 1}: {breathing_times[i]} seconds")
