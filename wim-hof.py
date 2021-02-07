@@ -5,6 +5,7 @@ import time
 import math
 import datetime
 import os
+import sys
 import random
 
 
@@ -16,6 +17,8 @@ class WimHofBreather:
         print("Alright, guys!")
         self.breathing_sets = int(input("How many breathing sets would you like to do?\n"))
         self.script_dir = os.path.dirname(__file__)
+        if len(sys.argv) > 1 and sys.argv[1] == "debug":
+            self.testing_mode = True
 
     def get_breathing_times(self):
         return self.breathing_times
@@ -34,8 +37,10 @@ class WimHofBreather:
             time.sleep(1)  # Wait for audio to load and start playing
             while wim_player.is_playing():
                 pass
-            song_list = [f for f in os.listdir(os.path.join(self.script_dir, f"audio/song{index}")) if f.endswith('mp3')]
-            breathing_music_player = vlc.MediaPlayer(os.path.join(self.script_dir, f'audio/song{index}/' + random.choice(song_list)))
+            song_list = [f for f in os.listdir(os.path.join(self.script_dir, f"audio/song{index}")) if
+                         f.endswith('mp3')]
+            breathing_music_player = vlc.MediaPlayer(
+                os.path.join(self.script_dir, f'audio/song{index}/' + random.choice(song_list)))
             breathing_music_player.audio_set_volume(60)  # Wim doesn't talk very loud
             breathing_music_player.play()
 
@@ -53,7 +58,7 @@ class WimHofBreather:
 
             b_player.play()
             time.sleep(1)  # Wait for audio to load and start playing
-            while (b_player.is_playing()):
+            while b_player.is_playing():
                 pass
 
     def record_time_with_sentinel(self):
@@ -65,6 +70,8 @@ class WimHofBreather:
 
 
 class LogManager:
+    script_dir = os.path.dirname(__file__)
+
     def __init__(self, log_file_path):
         self.log_file_path = os.path.join(self.script_dir, log_file_path)
 
@@ -81,7 +88,7 @@ class LogManager:
         return today + '\t' + string_for_tsv + '\n'
 
     def output_breathing_log(self, number_of_lines):
-        ## Read the last n lines of the log, and pretty-print
+        # Read the last n lines of the log, and pretty-print
         log_file = open(self.log_file_path, "r")
         lines = log_file.read().splitlines()
         last_n = lines[-number_of_lines:]
@@ -102,8 +109,8 @@ class LogManager:
         # Convert to an array
         values = time_entry_line.split('\t')
         # Get the time. Pretty format it.
-        time = values[0]
-        time_obj = datetime.datetime.strptime(time, '%Y-%m-%d %H:%M:%S.%f')
+        entry_time = values[0]
+        time_obj = datetime.datetime.strptime(entry_time, '%Y-%m-%d %H:%M:%S.%f')
         time_string = time_obj.strftime('%b %d %Y -- %H:%M')
 
         # For each of the times, pretty format it into seconds and minutes
