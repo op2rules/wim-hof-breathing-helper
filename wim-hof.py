@@ -54,17 +54,42 @@ for i in range(1, breathing_sets + 1):
     while (b_player.is_playing()):
         pass
 
-print("Your breathing times were:")
-for i in range(len(breathing_times)):
-    if breathing_times[i] > 60:
-        minutes = math.floor(breathing_times[i] / 60)
-        seconds = breathing_times[i] - (minutes * 60)
-        if len(str(seconds)) == 1:
-            seconds = "0" + str(seconds)
-        print(f"Set {i + 1}: {minutes}:{seconds}")
-    else:
-        print(f"Set {i + 1}: {breathing_times[i]} seconds")
+## Write the times to the log file.
+# Convert the breathing times to strings 
+times_str = list(map(str, breathing_times))
+string_for_tsv = '\t'.join(times_str)
+# Get the current date as a string.
+today = str(datetime.datetime.now())
+log_file_path = 'breathing_log.tsv'
+# Add all to the log
+with open(log_file_path, 'a+') as log_file:
+    log_file.write(today + '\t' + string_for_tsv + '\n')
 
-today = str(datetime.date.today())
-with open('breathing_log', 'a+') as log_file:
-    log_file.write(today + ': ' + str(breathing_times) + '\n')
+## Read the last n lines of the log, and pretty-print
+log_file = open(log_file_path, "r")
+lines = log_file.reads().splitlines()
+n = 5
+last_n = lines[-n:]
+
+# For each of the retreived lines.
+for line in last_n: 
+
+    # Convert to an array
+    values = line.split('\t')
+    # Get the time. Pretty format it.
+    time = values[0]
+    time_obj = datetime.datetime.strptime(time, '%Y-%m-%d %H:%M:%S.%f')
+    print(time_obj.strftime('%b %d %Y -- %H:%M'))
+
+    # For each of the times, pretty format it into seconds and minutes
+    breathing_seconds = list(map(int, values[1:]))
+    breathing_pretty = []
+    for i in range(len(breathing_seconds)):
+
+        minutes = math.floor(breathing_seconds[i] / 60)
+        seconds = breathing_seconds[i] - (minutes * 60)
+        if seconds < 10:
+            seconds = "0" + str(seconds)
+        breathing_pretty.append(str(minutes) + ':' + str(seconds))
+
+
