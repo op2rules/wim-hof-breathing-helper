@@ -42,7 +42,7 @@ class WimHofBreather:
                          f.endswith('mp3')]
             breathing_music_player = vlc.MediaPlayer(
                 os.path.join(self.script_dir, f'audio/song{index}/' + random.choice(song_list)))
-            breathing_music_player.audio_set_volume(60)  # Wim doesn't talk very loud
+            breathing_music_player.audio_set_volume(70)  # Wim doesn't talk very loud
             breathing_music_player.play()
 
             time_breathing = self.record_time_with_sentinel()
