@@ -1,18 +1,25 @@
+#!/usr/bin/env python3
+
 import vlc
 import time
 import math
 import datetime
 import os
+import sys
 import random
 
 
 class WimHofBreather:
-    testing_mode = True
+    testing_mode = False
     breathing_times = []
+    random.seed(datetime.datetime.now())
 
     def __init__(self):
         print("Alright, guys!")
         self.breathing_sets = int(input("How many breathing sets would you like to do?\n"))
+        self.script_dir = os.path.dirname(__file__)
+        if len(sys.argv) > 1 and sys.argv[1] == "debug":
+            self.testing_mode = True
 
     def get_breathing_times(self):
         return self.breathing_times
@@ -23,17 +30,19 @@ class WimHofBreather:
             if index > 3:
                 index = 'n'
             if self.testing_mode:
-                wim_player = vlc.MediaPlayer('audio/wim/breathing_testing.m4a')
+                wim_player = vlc.MediaPlayer(os.path.join(self.script_dir, 'audio/wim/breathing_testing.m4a'))
             else:
-                wim_player = vlc.MediaPlayer(f'./audio/wim/breathing-{index}.mp3')
+                wim_player = vlc.MediaPlayer(os.path.join(self.script_dir, f'audio/wim/breathing-{index}.mp3'))
             wim_player.play()
 
             time.sleep(1)  # Wait for audio to load and start playing
             while wim_player.is_playing():
                 pass
-            song_list = [f for f in os.listdir(f"./audio/song{index}") if f.endswith('mp3')]
-            breathing_music_player = vlc.MediaPlayer(f'./audio/song{index}/' + random.choice(song_list))
-            breathing_music_player.audio_set_volume(60)  # Wim doesn't talk very loud
+            song_list = [f for f in os.listdir(os.path.join(self.script_dir, f"audio/song{index}")) if
+                         f.endswith('mp3')]
+            breathing_music_player = vlc.MediaPlayer(
+                os.path.join(self.script_dir, f'audio/song{index}/' + random.choice(song_list)))
+            breathing_music_player.audio_set_volume(70)  # Wim doesn't talk very loud
             breathing_music_player.play()
 
             time_breathing = self.record_time_with_sentinel()
@@ -44,13 +53,13 @@ class WimHofBreather:
 
             # Play the 15 second breath hold
             if self.testing_mode:
-                b_player = vlc.MediaPlayer('./audio/wim/15_sec_testing.mp3')
+                b_player = vlc.MediaPlayer(os.path.join(self.script_dir, 'audio/wim/15_sec_testing.mp3'))
             else:
-                b_player = vlc.MediaPlayer('./audio/wim/15_second_hold.mp3')
+                b_player = vlc.MediaPlayer(os.path.join(self.script_dir, 'audio/wim/15_second_hold.mp3'))
 
             b_player.play()
             time.sleep(1)  # Wait for audio to load and start playing
-            while (b_player.is_playing()):
+            while b_player.is_playing():
                 pass
 
     def record_time_with_sentinel(self):
@@ -62,8 +71,10 @@ class WimHofBreather:
 
 
 class LogManager:
+    script_dir = os.path.dirname(__file__)
+
     def __init__(self, log_file_path):
-        self.log_file_path = log_file_path
+        self.log_file_path = os.path.join(self.script_dir, log_file_path)
 
     def save_breathing_time_to_today(self, breathing_time_string):
         formatted_day_string = self.convert_breathing_times_to_strings(breathing_time_string)
@@ -78,7 +89,7 @@ class LogManager:
         return today + '\t' + string_for_tsv + '\n'
 
     def output_breathing_log(self, number_of_lines):
-        ## Read the last n lines of the log, and pretty-print
+        # Read the last n lines of the log, and pretty-print
         log_file = open(self.log_file_path, "r")
         lines = log_file.read().splitlines()
         last_n = lines[-number_of_lines:]
@@ -99,8 +110,8 @@ class LogManager:
         # Convert to an array
         values = time_entry_line.split('\t')
         # Get the time. Pretty format it.
-        time = values[0]
-        time_obj = datetime.datetime.strptime(time, '%Y-%m-%d %H:%M:%S.%f')
+        entry_time = values[0]
+        time_obj = datetime.datetime.strptime(entry_time, '%Y-%m-%d %H:%M:%S.%f')
         time_string = time_obj.strftime('%b %d %Y -- %H:%M')
 
         # For each of the times, pretty format it into seconds and minutes
