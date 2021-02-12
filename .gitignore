@@ -2,3 +2,4 @@ breathing_log.tsv
 venv
 .DS_Store
 .idea
+__pycache__
