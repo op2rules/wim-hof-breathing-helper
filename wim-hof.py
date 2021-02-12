@@ -10,14 +10,17 @@ import random
 
 
 class WimHofBreather:
-    testing_mode = False
+    testing_mode = True
     breathing_times = []
     random.seed(datetime.datetime.now())
 
     def __init__(self):
         print("Alright, guys!")
         self.breathing_sets = int(input("How many breathing sets would you like to do?\n"))
-        self.script_dir = os.path.dirname(__file__)
+        if hasattr(sys, "_MEIPASS"):
+            self.script_dir = sys._MEIPASS
+        else:
+            self.script_dir = os.path.dirname(__file__)
         if len(sys.argv) > 1 and sys.argv[1] == "debug":
             self.testing_mode = True
 

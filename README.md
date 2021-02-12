@@ -31,16 +31,22 @@ Then add songs into the song1, song2, and song3 folders. If you want to have mor
 ## Compiling a distribution binary manually
 `pip install pyinstaller`
 
-`pyinstaller --add-data 'audio:audio' --onefile wim-hof.py`
+`pyinstaller --paths ./libvlc --add-data 'audio:audio' --onefile wim-hof.py`
 
 ### Compiling binary with docker
 First, create a spec file
 
-`pyi-makespec --add-data 'audio:audio' --onefile wim-hof.py`
+`pyi-makespec --add-binary 'libvlc/*.dll:VLC' --add-data 'audio:audio' --onefile wim-hof.py`
 
 Then run the following docker image command. It will create a dist dir with the binary
 
 Linux: `docker run -v "$(pwd):/src/" cdrx/pyinstaller-linux:python3`
+
+Windows needs an updated docker file from the cdrx repo, so we will need to build a new one
+
+`docker build -f Dockerfile-py3-win64 .`
+
+and then do these changes: https://github.com/pyinstaller/pyinstaller/issues/4506
 
 Windows: `docker run -v "$(pwd):/src/" cdrx/pyinstaller-windows:python3`
 
