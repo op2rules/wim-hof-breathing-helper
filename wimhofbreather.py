@@ -21,32 +21,46 @@ class WimHofBreather:
     def get_breathing_times(self):
         return self.breathing_times
 
-    def lets_do_some_breathing(self):
-        for i in range(1, self.breathing_sets + 1):
-            index = i
-            if index > 3:
-                index = 'n'
-            if self.testing_mode:
-                wim_player = vlc.MediaPlayer(os.path.join(self.script_dir, 'audio/wim/breathing_testing.m4a'))
-            else:
-                wim_player = vlc.MediaPlayer(os.path.join(self.script_dir, f'audio/wim/breathing-{index}.mp3'))
-            wim_player.play()
+    def get_breathing_player(self, index):
+        if index > 3:
+            index = 'n'
+        if self.testing_mode:
+            wim_player = vlc.MediaPlayer(os.path.join(self.script_dir, 'audio/wim/breathing_testing.m4a'))
+        else:
+            wim_player = vlc.MediaPlayer(os.path.join(self.script_dir, f'audio/wim/breathing-{index}.mp3'))
 
+        return(wim_player)
+
+    def get_music_player(self, index):
+
+        # Get a random song
+        song_list = [f for f in os.listdir(os.path.join(self.script_dir, f"audio/song{index}")) if
+                     f.endswith('mp3')]
+        song = os.path.join(self.script_dir, f'audio/song{index}/' + random.choice(song_list))
+        music_player = vlc.MediaPlayer(song)
+
+        music_player.audio_set_volume(70)  # Wim doesn't talk very loud
+        return(music_player)
+
+
+    def lets_do_some_breathing(self):
+
+        for index in range(1, self.breathing_sets + 1):
+
+            wim_player = self.get_breathing_player(index)
+            wim_player.play()
             time.sleep(1)  # Wait for audio to load and start playing
             while wim_player.is_playing():
                 pass
-            song_list = [f for f in os.listdir(os.path.join(self.script_dir, f"audio/song{index}")) if
-                         f.endswith('mp3')]
-            breathing_music_player = vlc.MediaPlayer(
-                os.path.join(self.script_dir, f'audio/song{index}/' + random.choice(song_list)))
-            breathing_music_player.audio_set_volume(70)  # Wim doesn't talk very loud
-            breathing_music_player.play()
+
+            music_player = self.get_music_player(index)
+            music_player.play()
 
             time_breathing = self.record_time_with_sentinel()
             self.breathing_times.append(time_breathing)
 
-            if breathing_music_player.is_playing():
-                breathing_music_player.stop()
+            if music_player.is_playing():
+                music_player.stop()
 
             # Play the 15 second breath hold
             if self.testing_mode:
