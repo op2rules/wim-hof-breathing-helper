@@ -7,7 +7,7 @@ import random
 
 
 class WimHofBreather:
-    testing_mode = True
+    testing_mode = False
     breathing_times = []
     random.seed(datetime.datetime.now())
 
@@ -24,13 +24,14 @@ class WimHofBreather:
     def lets_do_some_breathing(self):
         for round in range(1, self.breathing_sets + 1):
 
+            if round > 3:
+                round = 'n'
+
             self.play_breathing_audio(round)
             self.play_music_audio(round)
             self.play_15_second_breath_hold_audio()
 
     def play_breathing_audio(self, round):
-        if round > 3:
-            round = 'n'
         if self.testing_mode:
             wim_player = vlc.MediaPlayer(os.path.join(self.script_dir, 'audio/wim/breathing_testing.m4a'))
         else:
