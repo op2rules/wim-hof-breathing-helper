@@ -22,20 +22,19 @@ class WimHofBreather:
         return self.breathing_times
 
     def lets_do_some_breathing(self):
+        for round in range(1, self.breathing_sets + 1):
 
-        for index in range(1, self.breathing_sets + 1):
+            self.play_breathing_audio(round)
+            self.play_music_audio(round)
+            self.play_15_second_breath_hold_audio()
 
-            self.play_breathing_audio(index)
-            self.play_music_audio(index)
-            self.play_holding_audio()
-
-    def play_breathing_audio(self, index):
-        if index > 3:
-            index = 'n'
+    def play_breathing_audio(self, round):
+        if round > 3:
+            round = 'n'
         if self.testing_mode:
             wim_player = vlc.MediaPlayer(os.path.join(self.script_dir, 'audio/wim/breathing_testing.m4a'))
         else:
-            wim_player = vlc.MediaPlayer(os.path.join(self.script_dir, f'audio/wim/breathing-{index}.mp3'))
+            wim_player = vlc.MediaPlayer(os.path.join(self.script_dir, f'audio/wim/breathing-{round}.mp3'))
 
         wim_player.play()
         time.sleep(1)  # Wait for audio to load and start playing
@@ -43,12 +42,11 @@ class WimHofBreather:
         while wim_player.is_playing():
             pass
 
-    def play_music_audio(self, index):
-
+    def play_music_audio(self, round):
         # Get a random song
-        song_list = [f for f in os.listdir(os.path.join(self.script_dir, f"audio/song{index}")) if
+        song_list = [f for f in os.listdir(os.path.join(self.script_dir, f"audio/song{round}")) if
                      f.endswith('mp3')]
-        song = os.path.join(self.script_dir, f'audio/song{index}/' + random.choice(song_list))
+        song = os.path.join(self.script_dir, f'audio/song{round}/' + random.choice(song_list))
         music_player = vlc.MediaPlayer(song)
 
         music_player.audio_set_volume(70)  # Wim doesn't talk very loud
@@ -57,11 +55,11 @@ class WimHofBreather:
         time_breathing = self.record_time_with_sentinel()
         self.breathing_times.append(time_breathing)
 
+        # At this point, we want to stop playing the music audio and move on.
         if music_player.is_playing():
             music_player.stop()
 
-    def play_holding_audio(self):
-        # Play the 15 second breath hold
+    def play_15_second_breath_hold_audio(self):
         if self.testing_mode:
             b_player = vlc.MediaPlayer(os.path.join(self.script_dir, 'audio/wim/15_sec_testing.mp3'))
         else:
