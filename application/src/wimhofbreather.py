@@ -24,18 +24,40 @@ class WimHofBreather:
     def lets_do_some_breathing(self):
         for round in range(1, self.breathing_sets + 1):
 
-            if round > 3:
-                round = 'n'
-
             self.play_breathing_audio(round)
 
-            if round<=3:
+            if round<=4:
                 list_player = self.get_vlc_MediaListPLayer(round)
                 list_player = self.play_music_audio(list_player)
             else:
                 list_player = self.play_music_audio(list_player)
 
             self.play_15_second_breath_hold_audio()
+
+    def get_vlc_MediaListPLayer(self, round):
+        # Get song list
+        song_list = self.get_song_file_paths(round)
+        # Shuffle!
+        random.shuffle(song_list)
+        # Create the music player list
+        Instance = vlc.Instance()
+        Media_list = Instance.media_list_new(song_list)
+        list_player = Instance.media_list_player_new()
+        list_player.set_media_list(Media_list)
+        return list_player
+
+    def play_music_audio(self, list_player):
+        list_player.next()
+        # Get the vlc player so we can set the volume
+        music_player = list_player.get_media_player()
+        music_player.audio_set_volume(70)
+        # Record the time and prompt for input
+        time_breathing = self.record_time_with_sentinel()
+        self.breathing_times.append(time_breathing)
+        # At this point, we want to stop playing the music audio and move on.
+        if list_player.is_playing():
+            list_player.pause()
+        return list_player
 
     def play_breathing_audio(self, round):
         if self.testing_mode:
@@ -49,39 +71,18 @@ class WimHofBreather:
         while wim_player.is_playing():
             pass
 
-    def play_music_audio(self, list_player):
-        list_player.next()
-        # Get the vlc player so we can set the volume
-        music_player = list_player.get_media_player()
-        music_player.audio_set_volume(70)
-        # Record the time and prompt for input
-        time_breathing = self.record_time_with_sentinel()
-        self.breathing_times.append(time_breathing)
-        # At this point, we want to stop playing the music audio and move on.
-        if list_player.is_playing():
-            list_player.pause()
-        return(list_player)
-
     def get_song_file_paths(self, round):
+
+        if round>=4:
+            round = 'n'
+
         song_dir = os.path.join(self.script_dir, f"audio/song{round}")
         song_list = []
         for dirpath, _, files in os.walk(song_dir):
             for f in files:
                 file_path = os.path.join(dirpath, f)
                 song_list.append(file_path)
-        return(song_list)
-
-    def get_vlc_MediaListPLayer(self, round):
-        # Get song list
-        song_list = self.get_song_file_paths(round)
-        # Shuffle!
-        random.shuffle(song_list)
-        # Create the music player list
-        Instance = vlc.Instance()
-        Media_list = Instance.media_list_new(song_list)
-        list_player = Instance.media_list_player_new()
-        list_player.set_media_list(Media_list)
-        return(list_player)
+        return song_list
 
     def play_15_second_breath_hold_audio(self):
         if self.testing_mode:
