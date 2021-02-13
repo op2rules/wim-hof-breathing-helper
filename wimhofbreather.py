@@ -7,7 +7,7 @@ import random
 
 
 class WimHofBreather:
-    testing_mode = False
+    testing_mode = True
     breathing_times = []
     random.seed(datetime.datetime.now())
 
@@ -43,21 +43,39 @@ class WimHofBreather:
             pass
 
     def play_music_audio(self, round):
-        # Get a random song
-        song_list = [f for f in os.listdir(os.path.join(self.script_dir, f"audio/song{round}")) if
-                     f.endswith('mp3')]
-        song = os.path.join(self.script_dir, f'audio/song{round}/' + random.choice(song_list))
-        music_player = vlc.MediaPlayer(song)
-
-        music_player.audio_set_volume(70)  # Wim doesn't talk very loud
-        music_player.play()
-
+        # Get song list
+        song_list = self.get_song_file_paths(round)
+        # Shuffle!
+        random.shuffle(song_list)
+        # Create the music player list
+        list_player = self.create_vlc_songlist_player(song_list)
+        # Get the vlc player so we can set the volume
+        music_player = list_player.get_media_player()
+        music_player.audio_set_volume(70)
+        list_player.play()
+        # Record the time and prompt for input
         time_breathing = self.record_time_with_sentinel()
         self.breathing_times.append(time_breathing)
-
         # At this point, we want to stop playing the music audio and move on.
-        if music_player.is_playing():
-            music_player.stop()
+        if list_player.is_playing():
+            list_player.stop()
+
+    def get_song_file_paths(self, round):
+        song_dir = os.path.join(self.script_dir, f"audio/song{round}")
+        song_list = []
+        for dirpath, _, files in os.walk(song_dir):
+            for f in files:
+                file_path = os.path.join(dirpath, f)
+                song_list.append(file_path)
+        return(song_list)
+
+    def create_vlc_songlist_player(self, song_list):
+
+        Instance = vlc.Instance()
+        Media_list = Instance.media_list_new(song_list)
+        list_player = Instance.media_list_player_new()
+        list_player.set_media_list(Media_list)
+        return(list_player)
 
     def play_15_second_breath_hold_audio(self):
         if self.testing_mode:
