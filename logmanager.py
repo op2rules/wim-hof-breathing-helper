@@ -5,8 +5,11 @@ import os
 class LogManager:
     script_dir = os.path.dirname(__file__)
 
-    def __init__(self, log_file_path):
-        self.log_file_path = os.path.join(self.script_dir, log_file_path)
+    def __init__(self, log_file_path, absolute_path=False):
+        if absolute_path == False:
+            self.log_file_path = os.path.join(self.script_dir, log_file_path)
+        else:
+            self.log_file_path = log_file_path
 
     def save_breathing_time_to_today(self, breathing_time_string):
         formatted_day_string = self.convert_breathing_times_to_strings(breathing_time_string)
