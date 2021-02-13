@@ -51,8 +51,8 @@ class WimHofBreather:
         list_player = self.create_vlc_songlist_player(song_list)
         # Get the vlc player so we can set the volume
         music_player = list_player.get_media_player()
-        music_player.audio_set_volume(70)
         list_player.play()
+        music_player.audio_set_volume(70)
         # Record the time and prompt for input
         time_breathing = self.record_time_with_sentinel()
         self.breathing_times.append(time_breathing)
