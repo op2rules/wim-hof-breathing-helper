@@ -60,6 +60,8 @@ class WimHofBreather:
         return list_player
 
     def play_breathing_audio(self, round):
+        if round>=4:
+            round = 'n'
         if self.testing_mode:
             wim_player = vlc.MediaPlayer(os.path.join(self.script_dir, 'audio/wim/breathing_testing.m4a'))
         else:
@@ -72,10 +74,8 @@ class WimHofBreather:
             pass
 
     def get_song_file_paths(self, round):
-
         if round>=4:
             round = 'n'
-
         song_dir = os.path.join(self.script_dir, f"audio/song{round}")
         song_list = []
         for dirpath, _, files in os.walk(song_dir):
