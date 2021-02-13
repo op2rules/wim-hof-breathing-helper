@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
-from logmanager import LogManager
-from wimhofbreather import WimHofBreather
+from .logmanager import LogManager
+from .wimhofbreather import WimHofBreather
 
 wim_hof_class = WimHofBreather()
 wim_hof_class.lets_do_some_breathing()
