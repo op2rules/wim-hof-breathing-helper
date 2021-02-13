@@ -1,6 +1,6 @@
+from application.src.logmanager import LogManager
 import datetime
 import pytest
-from ..logmanager import LogManager
 
 FAKE_TIME = datetime.datetime(2020, 12, 25, 17, 5, 55, 12345)
 
@@ -24,7 +24,7 @@ def test_convert_breathing_times_to_strings(patch_datetime_now):
 
 
 def test_output_breathing_log(capsys):
-    logmanager = LogManager('test/test_breathing_log.tsv')
+    logmanager = LogManager('../test/test_breathing_log.tsv')
     logmanager.output_breathing_log(5)
     captured = capsys.readouterr()
 

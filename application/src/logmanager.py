@@ -6,7 +6,7 @@ class LogManager:
     script_dir = os.path.dirname(__file__)
 
     def __init__(self, log_file_path, absolute_path=False):
-        if absolute_path == False:
+        if not absolute_path:
             self.log_file_path = os.path.join(self.script_dir, log_file_path)
         else:
             self.log_file_path = log_file_path
