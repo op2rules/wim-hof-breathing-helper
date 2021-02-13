@@ -1,6 +1,6 @@
 import datetime
 import pytest
-from logmanager import LogManager
+from ..logmanager import LogManager
 
 FAKE_TIME = datetime.datetime(2020, 12, 25, 17, 5, 55, 12345)
 
