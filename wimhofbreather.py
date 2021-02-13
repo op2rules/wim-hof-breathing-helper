@@ -25,7 +25,13 @@ class WimHofBreather:
         for round in range(1, self.breathing_sets + 1):
 
             self.play_breathing_audio(round)
-            self.play_music_audio(round)
+
+            if round<=3:
+                list_player = self.get_vlc_MediaListPLayer(round)
+                list_player = self.play_music_audio(list_player)
+            else:
+                list_player = self.play_music_audio(list_player)
+
             self.play_15_second_breath_hold_audio()
 
     def play_breathing_audio(self, round):
@@ -42,23 +48,18 @@ class WimHofBreather:
         while wim_player.is_playing():
             pass
 
-    def play_music_audio(self, round):
-        # Get song list
-        song_list = self.get_song_file_paths(round)
-        # Shuffle!
-        random.shuffle(song_list)
-        # Create the music player list
-        list_player = self.create_vlc_songlist_player(song_list)
+    def play_music_audio(self, list_player):
+        list_player.next()
         # Get the vlc player so we can set the volume
         music_player = list_player.get_media_player()
-        list_player.play()
         music_player.audio_set_volume(70)
         # Record the time and prompt for input
         time_breathing = self.record_time_with_sentinel()
         self.breathing_times.append(time_breathing)
         # At this point, we want to stop playing the music audio and move on.
         if list_player.is_playing():
-            list_player.stop()
+            list_player.pause()
+        return(list_player)
 
     def get_song_file_paths(self, round):
         song_dir = os.path.join(self.script_dir, f"audio/song{round}")
@@ -69,8 +70,12 @@ class WimHofBreather:
                 song_list.append(file_path)
         return(song_list)
 
-    def create_vlc_songlist_player(self, song_list):
-
+    def get_vlc_MediaListPLayer(self, round):
+        # Get song list
+        song_list = self.get_song_file_paths(round)
+        # Shuffle!
+        random.shuffle(song_list)
+        # Create the music player list
         Instance = vlc.Instance()
         Media_list = Instance.media_list_new(song_list)
         list_player = Instance.media_list_player_new()
