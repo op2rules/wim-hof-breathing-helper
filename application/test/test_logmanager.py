@@ -41,7 +41,7 @@ Current Breathing Session_______________________________________
 
 def test_convert_time_entry_to_pretty_output():
     logmanager = LogManager('xxx')
-    string = logmanager.convert_time_entry_to_pretty_output('2015-12-25 17:05:55.31337\t43\t180\t200\t205')
+    string = logmanager.convert_entry_to_pretty_output('2015-12-25 17:05:55.31337\t43\t180\t200\t205')
 
     assert string == "Dec 25 2015 -- 17:05\t\t0:43\t3:00\t3:20\t3:25"
 
@@ -57,5 +57,5 @@ def test_minutes_seconds_from_int():
 def test_save_breathing_time_to_today(patch_datetime_now, tmpdir):
     file = tmpdir.join('output.txt')
     logmanager = LogManager(file)
-    logmanager.save_breathing_time_to_today([200, 45, 1000, 9])
+    logmanager.save_entry([200, 45, 1000, 9])
     assert file.read() == "2020-12-25 17:05:55.012345\t200\t45\t1000\t9\n"
