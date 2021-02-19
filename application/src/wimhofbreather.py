@@ -7,7 +7,7 @@ import random
 
 
 class WimHofBreather:
-    testing_mode = False
+    testing_mode = True
     breathing_times = []
     random.seed(datetime.datetime.now())
 

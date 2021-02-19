@@ -11,7 +11,34 @@ class LogManager:
         else:
             self.log_file_path = log_file_path
 
+    def ask_user(self):
+        # This function asks for either yes or no.
+        check = str(input("Is this correct? (Y/N): ")).lower().strip()
+        try:
+            if check[0] == 'y':
+                return True
+            elif check[0] == 'n':
+                return False
+            else:
+                print('Invalid Input')
+                return self.ask_user()
+        except Exception as error:
+            print("Please enter valid inputs")
+            print(error)
+            return self.ask_user()
+
+    def ask_for_journal_entry(self):
+        # Ask the user to input a journal entry
+        confirm = False
+        while not confirm:
+            journal_entry = input("Enter Journal entry\n")
+            print('Current Entry:')
+            print(journal_entry)
+            if self.ask_user():
+                confirm = True
+
     def save_breathing_time_to_today(self, breathing_time_string):
+        journal_entry = self.ask_for_journal_entry()
         formatted_day_string = self.convert_breathing_times_to_strings(breathing_time_string)
         with open(self.log_file_path, 'a+') as log_file:
             log_file.write(formatted_day_string)
