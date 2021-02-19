@@ -50,7 +50,7 @@ class WimHofBreather:
         list_player.next()
         # Get the vlc player so we can set the volume
         music_player = list_player.get_media_player()
-        music_player.audio_set_volume(70)
+        music_player.audio_set_volume(50)
         # Record the time and prompt for input
         time_breathing = self.record_time_with_sentinel()
         self.breathing_times.append(time_breathing)
@@ -62,16 +62,19 @@ class WimHofBreather:
     def play_breathing_audio(self, round):
         if round>=4:
             round = 'n'
-        if self.testing_mode:
-            wim_player = vlc.MediaPlayer(os.path.join(self.script_dir, 'audio/wim/breathing_testing.m4a'))
-        else:
-            wim_player = vlc.MediaPlayer(os.path.join(self.script_dir, f'audio/wim/breathing-{round}.mp3'))
+
+        wim_player = vlc.MediaPlayer(os.path.join(self.script_dir, f'audio/wim/breathing-{round}.mp3'))
 
         wim_player.play()
         time.sleep(1)  # Wait for audio to load and start playing
 
-        while wim_player.is_playing():
-            pass
+        # For Testing!
+        if self.testing_mode:
+            time.sleep(3)
+            wim_player.pause()
+        else:
+            while wim_player.is_playing():
+                pass
 
     def get_song_file_paths(self, round):
         if round>=4:
@@ -85,15 +88,19 @@ class WimHofBreather:
         return song_list
 
     def play_15_second_breath_hold_audio(self):
-        if self.testing_mode:
-            b_player = vlc.MediaPlayer(os.path.join(self.script_dir, 'audio/wim/15_sec_testing.mp3'))
-        else:
-            b_player = vlc.MediaPlayer(os.path.join(self.script_dir, 'audio/wim/15_second_hold.mp3'))
+
+        b_player = vlc.MediaPlayer(os.path.join(self.script_dir, 'audio/wim/15_second_hold.mp3'))
 
         b_player.play()
         time.sleep(1)  # Wait for audio to load and start playing
-        while b_player.is_playing():
-            pass
+
+        # If Testing, play for 3 seconds, otherwise, play full clip
+        if self.testing_mode:
+            time.sleep(3)
+            b_player.pause()
+        else:
+            while b_player.is_playing():
+                pass
 
     def record_time_with_sentinel(self):
         start_time = time.time()
