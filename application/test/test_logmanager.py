@@ -62,7 +62,7 @@ def test_save_entry(patch_datetime_now, tmpdir):
     logmanager = LogManager(file)
     breathing_times = [43, 180, 200, 205]
     journal_entry = 'Test Journal Entry'
-    converted_string = logmanager.save_entry(journal_entry, breathing_times)
+    logmanager.save_entry(journal_entry, breathing_times)
     assert file.read() == "2020-12-25 17:05:55.012345\tTest Journal Entry\t43\t180\t200\t205\n"
 
 
