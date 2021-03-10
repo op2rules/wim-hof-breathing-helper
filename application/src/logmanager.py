@@ -42,11 +42,8 @@ class LogManager:
             print(error)
             return self.ask_user()
 
-    def save_entry(self, breathing_times):
+    def save_entry(self, journal_entry, breathing_times):
         # Write an entire entry line to the log file
-
-        # Get the journal entry from the user
-        journal_entry = self.ask_for_journal_entry()
 
         # Convert the breathing times into a string separated with tabs
         times_str = list(map(str, breathing_times))
