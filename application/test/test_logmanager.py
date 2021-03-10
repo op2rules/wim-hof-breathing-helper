@@ -1,7 +1,6 @@
 from application.src.logmanager import LogManager
 import datetime
 import pytest
-import mock
 
 FAKE_TIME = datetime.datetime(2020, 12, 25, 17, 5, 55, 12345)
 
