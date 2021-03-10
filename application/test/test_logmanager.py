@@ -14,6 +14,7 @@ def patch_datetime_now(monkeypatch):
 
     monkeypatch.setattr(datetime, 'datetime', mydatetime)
 
+
 def test_ask_for_journal_entry(monkeypatch, capsys):
     logmanager = LogManager('test')
 
@@ -22,6 +23,7 @@ def test_ask_for_journal_entry(monkeypatch, capsys):
     # re-enter their journal entry, however.
     def return_true(_):
         return True
+
     monkeypatch.setattr(LogManager, "ask_user", return_true)
 
     # When Journal Entry is entered
