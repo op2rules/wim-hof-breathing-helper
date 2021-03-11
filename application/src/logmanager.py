@@ -26,7 +26,7 @@ class LogManager:
 
     def ask_user(self):
         # This function asks for either yes or no.
-        check = str(input("Is this correct? (Y/N): ")).lower().strip()
+        check = str(input("Is this correct? (Y/n): ")).lower().strip()
         try:
             if check == 'y':
                 return True
@@ -88,11 +88,16 @@ class LogManager:
 
         # Get the journal entry
         journal_entry = values[1]
+        # Print nothing if
+        if journal_entry == 'No Entry':
+            journal_entry = ''
+        else:
+            journal_entry = '#: ' + journal_entry
 
         # For each of the breathing times, pretty format it into seconds and minutes
         breathing_seconds_from_log = list(map(int, values[2:]))
         breathing_pretty_from_log = map(self.minutes_seconds_from_int, breathing_seconds_from_log)
-        return time_string + '\t\t' + '\t'.join(breathing_pretty_from_log) + '\t' + '#: ' + journal_entry
+        return time_string + '\t\t' + '\t'.join(breathing_pretty_from_log) + '\t' + journal_entry
 
     def minutes_seconds_from_int(self, breathing_seconds):
         minutes = math.floor(breathing_seconds / 60)
