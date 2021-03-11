@@ -5,7 +5,7 @@ from wimhofbreather import WimHofBreather
 wim_hof_class = WimHofBreather()
 wim_hof_class.lets_do_some_breathing()
 
-log_manager = LogManager('breathing_log.tsv')
+log_manager = LogManager('breathing-log.tsv')
 journal_entry = log_manager.ask_for_journal_entry()
 log_manager.save_entry(journal_entry, wim_hof_class.get_breathing_times())
 log_manager.output_breathing_log(5)
