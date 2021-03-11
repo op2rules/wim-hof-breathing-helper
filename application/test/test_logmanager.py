@@ -73,7 +73,7 @@ def test_output_breathing_log(capsys, tmpdir):
 2021-03-02 00:43:08.413525\tEntry 2\t10\t20\t30\t40\t50
 2021-03-03 00:43:10.890717\tEntry 3\t10\t20\t30\t40\t50
 2021-03-04 00:43:37.294240\tEntry 4\t10\t20\t30\t40\t50
-2021-03-05 00:43:37.985816\tEntry 5\t10\t20\t30\t40\t90
+2021-03-05 00:43:37.985816\tNo Entry\t10\t20\t30\t40\t90
 2021-03-06 00:43:38.985816\tLast Entry\t10\t20\t30\t40\t90
 """)
 
@@ -84,7 +84,7 @@ def test_output_breathing_log(capsys, tmpdir):
     assert captured.out == ("""
 Mar 03 2021 -- 00:43\t\t0:10\t0:20\t0:30\t0:40\t0:50\t#: Entry 3
 Mar 04 2021 -- 00:43\t\t0:10\t0:20\t0:30\t0:40\t0:50\t#: Entry 4
-Mar 05 2021 -- 00:43\t\t0:10\t0:20\t0:30\t0:40\t1:30\t#: Entry 5
+Mar 05 2021 -- 00:43\t\t0:10\t0:20\t0:30\t0:40\t1:30\t
 
 Current Breathing Session_______________________________________
 \x1b[92mMar 06 2021 -- 00:43\t\t0:10\t0:20\t0:30\t0:40\t1:30\t#: Last Entry\x1b[0m
@@ -92,10 +92,16 @@ Current Breathing Session_______________________________________
 
 
 def test_convert_entry_to_pretty_output():
-    test_entry_string = '2021-03-05 00:43:37.985816\tEntry 5\t10\t20\t30\t40\t90'
     logmanager = LogManager('test')
+
+    # Regular Entry
+    test_entry_string = '2021-03-05 00:43:37.985816\tEntry 5\t10\t20\t30\t40\t90'
     output = logmanager.convert_entry_to_pretty_output(test_entry_string)
     assert output == 'Mar 05 2021 -- 00:43\t\t0:10\t0:20\t0:30\t0:40\t1:30\t#: Entry 5'
+    # No Entry
+    test_entry_string = '2021-03-05 00:43:37.985816\tNo Entry\t10\t20\t30\t40\t90'
+    output = logmanager.convert_entry_to_pretty_output(test_entry_string)
+    assert output == 'Mar 05 2021 -- 00:43\t\t0:10\t0:20\t0:30\t0:40\t1:30\t'
 
 
 def test_minutes_seconds_from_int():
