@@ -1,6 +1,8 @@
 application/src/breathing_log.tsv
+application/src/breathing-log.tsv
 venv
 .DS_Store
 .idea
 __pycache__
 .pytest_cache
+
